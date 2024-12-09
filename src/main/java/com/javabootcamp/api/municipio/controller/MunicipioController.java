@@ -80,13 +80,12 @@ public class MunicipioController {
                             municipio.getCodigoMunicipio(),
                             municipio.getCodigoUf().getCodigoUF(),
                             municipio.getNome(),
-                            municipio.getStatus()));
+                            municipio.getStatus())).orElse(null);
         } else if (codigoUf == null && nome == null && status == null) {
             retorno = municipioService.findAll();
         } else {
             retorno = municipioService.findAll(codigoUf, nome, status);
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(retorno == null ? Collections.emptyList() : retorno);
     }
 

@@ -42,11 +42,25 @@ public class UfService {
         }
         return new ArrayList<>();
     }
+
     public List<UfModel> findAll(Integer status) {
         UfModel ufModel = new UfModel();
         ufModel.setStatus(status);
-
         return ufRepository.findAll(Example.of(ufModel));
     }
+
+    public List<UfModel> findBySigla(String sigla) {
+        UfModel ufModel = new UfModel();
+        ufModel.setSigla(sigla.toUpperCase());
+        return ufRepository.findAll(Example.of(ufModel));
+    }
+
+    public List<UfModel> findByNome(String nome) {
+        UfModel ufModel = new UfModel();
+        ufModel.setNome(nome.toUpperCase());
+        return ufRepository.findAll(Example.of(ufModel));
+    }
+
+
 
 }

@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +40,16 @@ public class Ufcontroller {
         }
         var ufModel = new UfModel(ufRecordDto);
         try {
+
+            List<UfModel> validasigla = ufService.findBySigla(ufRecordDto.sigla());
+            if(!validasigla.isEmpty() ){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("Sigla já cadastrada na base de dados", HttpStatus.CONFLICT.value()));
+            }
+            List<UfModel> validaNome = ufService.findByNome(ufRecordDto.nome());
+            if(!validaNome.isEmpty() ){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("Nome da UF já cadastrado na base de dados", HttpStatus.CONFLICT.value()));
+            }
+
             return ResponseEntity.status(HttpStatus.OK).body(ufService.save(ufModel));
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("UF já cadastrada na base de dados", HttpStatus.CONFLICT.value()));
@@ -77,6 +89,18 @@ public class Ufcontroller {
         if (object.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("UF não cadastrada na base de dados informe um id válido", HttpStatus.CONFLICT.value()));
         }
+
+        List<UfModel> validasigla = ufService.findBySigla(ufRecordUpdateDto.sigla());
+
+        if(!object.get().getSigla().equals(ufRecordUpdateDto.sigla().toUpperCase()) && !validasigla.isEmpty() ){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("Sigla já cadastrada na base de dados", HttpStatus.CONFLICT.value()));
+        }
+
+        List<UfModel> validaNome = ufService.findByNome(ufRecordUpdateDto.nome());
+        if(!object.get().getNome().equals(ufRecordUpdateDto.nome().toUpperCase()) && !validaNome.isEmpty() ){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("Nome da UF já cadastrado na base de dados", HttpStatus.CONFLICT.value()));
+        }
+
         var ufModel = new UfModel(ufRecordUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body(ufService.save(ufModel));
     }
