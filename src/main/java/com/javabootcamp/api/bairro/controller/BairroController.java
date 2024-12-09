@@ -77,7 +77,7 @@ public class BairroController {
                     bairro.getCodigoMunicipio().getCodigoMunicipio(),
                     bairro.getNome(),
                     bairro.getStatus()
-            ));
+            )).orElse(null);
         } else if (codigoMunicipio == null && nome == null && status == null) {
             retorno = bairroService.findAll();
         }else{

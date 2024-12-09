@@ -84,7 +84,7 @@ public class EnderecoController {
                     endereco.getComplemento(),
                     endereco.getCep(),
                     endereco.getCodigoPessoa().getCodigoPessoa()
-            ));
+            )).orElse(null);
         } else if (codigoBairro ==null && nomeRua ==null && numero == null && complemento == null && cep == null && codigoPessoa == null) {
             retorno = enderecoService.findAll();
         }else{
