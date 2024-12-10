@@ -46,13 +46,16 @@ public class PessoaController {
         try {
 
             Object retorno = null;
+            //todo validar se o codigoBairro está vindo
+
+            List<PessoaRecordOutputDto> validaLogin = pessoaService.findAll(pessoaRecordDto.login().toUpperCase(), null, null);
+            if (!validaLogin.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("Login já cadastrado na base de dados", HttpStatus.CONFLICT.value()));
+            }
+
             var pessoaModel = new PessoaModel(pessoaRecordDto);
             PessoaModel pessoa = pessoaService.save(pessoaModel);
 
-            List<PessoaRecordOutputDto> validaLogin = pessoaService.findAll(pessoaRecordDto.login().toUpperCase(), null, null);
-            if (validaLogin.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("Login já cadastrado na base de dados", HttpStatus.CONFLICT.value()));
-            }
             if (pessoa != null) {
                 pessoaRecordDto.enderecos().stream().map(endereco -> new EnderecoModel(endereco, pessoa.getCodigoPessoa())).forEach(
                         enderecoModel -> enderecoService.save(enderecoModel)
@@ -76,7 +79,7 @@ public class PessoaController {
 
         Object retorno;
 
-        if (codigoPessoa != null) {
+        if (codigoPessoa != null && nome != null && login != null && status != null) {
             retorno = pessoaService.findById(codigoPessoa).orElse(null);
         } else if (login == null && status == null && nome == null) {
             retorno = pessoaService.findAll();
@@ -97,17 +100,20 @@ public class PessoaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto(validacaoMensagem.get(), HttpStatus.BAD_REQUEST.value()));
         }
         // Valida se pessoa ja existe
-        Optional<PessoaModel> pessoa = pessoaService.findById(pessoaRecordUpdateDto.codigoPessoa());
-        if (pessoa.isEmpty()) {
+        Optional<PessoaModel> validaCodigoPessoa = pessoaService.findById(pessoaRecordUpdateDto.codigoPessoa());
+        if (validaCodigoPessoa.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto("Pessoa não cadastrada na base de dados informe um id válido", HttpStatus.CONFLICT.value()));
         }
+
         try {
+            //todo validar se código endereço e códigoBairro existem
+
             //deletar endereços não enviados
-            List<Long> codigosEnderecoPessoaBanco = enderecoService.findIdsAndressByPerson(pessoa.get().getCodigoPessoa());
+            List<Long> codigosEnderecoPessoaBanco = enderecoService.findIdsAndressByPerson(validaCodigoPessoa.get().getCodigoPessoa());
             List<Long> codigosEnderecoPessoaDto = pessoaRecordUpdateDto.enderecos() != null ? pessoaRecordUpdateDto.enderecos().stream().map(endereco -> endereco.codigoEndereco()).toList() : new ArrayList<>();
             List<Long> codigoEnderecoDelete = codigosEnderecoPessoaBanco.stream().filter(endereco -> !codigosEnderecoPessoaDto.contains(endereco)).toList();
             codigoEnderecoDelete.forEach(endereco -> enderecoService.delete(endereco));
-            //salva e atualizando enderecos
+            //salva e atualiza enderecos
             if (pessoaRecordUpdateDto.enderecos() != null) {
                 pessoaRecordUpdateDto.enderecos().stream().map(endereco -> new EnderecoModel(endereco)).forEach(
                         enderecoModel -> enderecoService.save(enderecoModel));

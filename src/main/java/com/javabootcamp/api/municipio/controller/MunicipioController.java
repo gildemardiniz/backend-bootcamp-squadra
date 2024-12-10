@@ -104,6 +104,10 @@ public class MunicipioController {
             if (object.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Município não cadastrado na base de dados informe um id válido", HttpStatus.BAD_REQUEST.value()));
             }
+            Optional<UfModel> ufModel = ufService.findById(municipioRecordUpdateDto.codigoUf());
+            if (ufModel.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("UF não cadastrada na base de dados informe um id válido", HttpStatus.BAD_REQUEST.value()));
+            }
             var municipioModel = new MunicipioModel(municipioRecordUpdateDto);
             return ResponseEntity.status(HttpStatus.OK).body(municipioService.save(municipioModel));
         } catch (DataIntegrityViolationException e) {

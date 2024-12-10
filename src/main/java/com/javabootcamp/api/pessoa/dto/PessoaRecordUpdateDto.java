@@ -1,6 +1,7 @@
 package com.javabootcamp.api.pessoa.dto;
 
 import com.javabootcamp.api.endereco.dto.EnderecoRecordUpdateDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -26,6 +27,7 @@ public record PessoaRecordUpdateDto(
         @Max(value = 2, message = "informe status 1 para ativo ou 2 para inativo")
         Integer status,
 
+        @Valid
         List<EnderecoRecordUpdateDto> enderecos
 
 

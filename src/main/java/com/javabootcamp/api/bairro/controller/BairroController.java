@@ -71,7 +71,7 @@ public class BairroController {
             @RequestParam(required = false) Integer status) {
 
         Object retorno;
-        if (codigoBairro != null) {
+        if (codigoBairro != null && codigoMunicipio == null  && nome == null && status == null ) {
             retorno = bairroService.findById(codigoBairro).map(bairro -> new BairroRecordUpdateDto(
                     bairro.getCodigoBairro(),
                     bairro.getCodigoMunicipio().getCodigoMunicipio(),
