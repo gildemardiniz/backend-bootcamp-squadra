@@ -27,6 +27,7 @@ public record PessoaRecordDto(
         Integer status,
 
         @Valid
+        @NotNull(message = "O endereço não pode ser nulo")
         List<EnderecoRecordOutDto> enderecos
 ) {
 }

@@ -28,6 +28,7 @@ public record PessoaRecordUpdateDto(
         Integer status,
 
         @Valid
+        @NotNull(message = "O endereço não pode ser nulo")
         List<EnderecoRecordUpdateDto> enderecos
 
 

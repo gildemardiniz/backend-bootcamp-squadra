@@ -1,7 +1,9 @@
 package com.javabootcamp.api.uf.service;
 
+import com.javabootcamp.api.pessoa.model.PessoaModel;
 import com.javabootcamp.api.uf.model.UfModel;
 import com.javabootcamp.api.uf.repository.UfRepository;
+import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
@@ -60,7 +62,15 @@ public class UfService {
         ufModel.setNome(nome.toUpperCase());
         return ufRepository.findAll(Example.of(ufModel));
     }
-
+    public void desativarUf(long codigoUf) {
+        Optional<UfModel> ufModel = ufRepository.findById(codigoUf);
+        if (ufModel.isPresent()) {
+            ufModel.get().setStatus(2);
+            ufRepository.save(ufModel.get());
+        } else {
+            throw new PersistenceException("UF não cadastrada na base de dados");
+        }
+    }
 
 
 }

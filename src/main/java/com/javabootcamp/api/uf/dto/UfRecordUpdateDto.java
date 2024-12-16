@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.NumberFormat;
 
 public record UfRecordUpdateDto(
         @NotNull(message = "O código da Uf não pode estar vazia ou ser nulo")

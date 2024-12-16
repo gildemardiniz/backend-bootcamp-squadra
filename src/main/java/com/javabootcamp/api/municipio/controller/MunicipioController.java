@@ -35,8 +35,6 @@ public class MunicipioController {
     @Operation(summary = "Adicionar novo município", method = "POST")
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @NotNull MunicipioRecordDto municipioRecordDto) {
-
-        // Realiza a validacao dos atributos do Dto.
         var validacaoMensagem = Utils.validarViolacoes(municipioRecordDto);
         // Verifica se tem violacao e retorna o erro.
         if (validacaoMensagem.isPresent()) {
@@ -45,6 +43,10 @@ public class MunicipioController {
 
         try {
 
+            // Valida se Nome contaim numero.
+            if (municipioRecordDto.nome().matches("^[0-9]*$")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Formato inválido para o campo nome", HttpStatus.BAD_REQUEST.value()));
+            }
             List<MunicipioRecordUpdateDto> validacaoMunicipioUf = municipioService.findAll(municipioRecordDto.codigoUf(), municipioRecordDto.nome(), null);
             var municipioModel = new MunicipioModel(municipioRecordDto);
             Optional<UfModel> ufModel = ufService.findById(municipioRecordDto.codigoUf());
@@ -72,6 +74,19 @@ public class MunicipioController {
 
         Object retorno;
 
+        //Valida se nome contem numeros na busca
+        if(nome != null) { // Valida se nome contaim numero.
+            if (nome.matches("^[0-9]*$")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Valor inválido, informe no nome um texto ", HttpStatus.BAD_REQUEST.value()));
+            }
+        }
+        //Valida Valores 1 e dois pra status
+        if(status != null) {
+            if (status != 1 && status != 2) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Valor inválido, informe no status 1 para ativo ou 2 para inativo", HttpStatus.BAD_REQUEST.value()));
+            }
+        }
+
         if (codigoMunicipio != null) {
             retorno = municipioService.findById(codigoMunicipio)
                     .map(municipio -> new MunicipioRecordUpdateDto(
@@ -98,6 +113,10 @@ public class MunicipioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto(validaMensagem.get(), HttpStatus.BAD_REQUEST.value()));
         }
         try {
+            // Valida se Nome contaim numero.
+            if (municipioRecordUpdateDto.nome().matches("^[0-9]*$")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Formato inválido para o campo nome", HttpStatus.BAD_REQUEST.value()));
+            }
             Optional<MunicipioModel> object = municipioService.findById(municipioRecordUpdateDto.codigoMunicipio());
             if (object.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Município não cadastrado na base de dados informe um id válido", HttpStatus.BAD_REQUEST.value()));

@@ -18,9 +18,6 @@ public class PessoaService {
 
     @Autowired
     PessoaRepository pessoaRepository;
-    @Autowired
-    EnderecoRepository enderecoRepository;
-
 
     public List<PessoaRecordOutputDto> findAll() {
         return pessoaRepository.findAll().stream().map(pessoa -> new PessoaRecordOutputDto(
@@ -47,7 +44,6 @@ public class PessoaService {
         pessoaModel.setStatus(status);
         pessoaModel.setNome(nome == null ? null : nome.toUpperCase());
 
-
         return pessoaRepository.findAll(Example.of(pessoaModel)).stream().map(pessoa -> new PessoaRecordOutputDto(
                 pessoa.getCodigoPessoa(),
                 pessoa.getNome(),
@@ -58,7 +54,12 @@ public class PessoaService {
                 pessoa.getStatus(),
                 new ArrayList<>()
         )).toList();
+    }
 
+    public Optional<PessoaModel> findByLogin(String login) {
+        PessoaModel pessoaModel = new PessoaModel();
+        pessoaModel.setLogin(login == null ? null : login.toUpperCase());
+        return pessoaRepository.findOne(Example.of(pessoaModel));
     }
 
     public PessoaModel save(PessoaModel pessoaModel) {

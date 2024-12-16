@@ -4,6 +4,7 @@ import com.javabootcamp.api.municipio.dto.MunicipioRecordUpdateDto;
 import com.javabootcamp.api.municipio.model.MunicipioModel;
 import com.javabootcamp.api.uf.model.UfModel;
 import com.javabootcamp.api.municipio.repository.MunicipioRepository;
+import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
@@ -53,5 +54,14 @@ public class MunicipioService {
                 municipio.getNome(),
                 municipio.getStatus()
         )).toList();
+    }
+    public void desativarMunicipio(long codigoMunicipio) {
+        Optional<MunicipioModel> municipioModel = municipioRepository.findById(codigoMunicipio);
+        if (municipioModel.isPresent()) {
+            municipioModel.get().setStatus(2);
+            municipioRepository.save(municipioModel.get());
+        } else {
+            throw new PersistenceException("Município não cadastrado na base de dados");
+        }
     }
 }

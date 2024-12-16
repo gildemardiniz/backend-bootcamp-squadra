@@ -4,6 +4,8 @@ import com.javabootcamp.api.bairro.dto.BairroRecordUpdateDto;
 import com.javabootcamp.api.bairro.model.BairroModel;
 import com.javabootcamp.api.bairro.repository.BairroRepository;
 import com.javabootcamp.api.municipio.model.MunicipioModel;
+import com.javabootcamp.api.uf.model.UfModel;
+import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
@@ -50,5 +52,14 @@ public class BairroService {
     }
     public Optional<BairroModel> findById(Long codigoBairro) {
         return bairroRepository.findById(codigoBairro);
+    }
+    public void desativarBairro(long codigoUf) {
+        Optional<BairroModel> bairroModel = bairroRepository.findById(codigoUf);
+        if (bairroModel.isPresent()) {
+            bairroModel.get().setStatus(2);
+            bairroRepository.save(bairroModel.get());
+        } else {
+            throw new PersistenceException("Bairro não cadastrado na base de dados");
+        }
     }
 }

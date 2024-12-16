@@ -110,18 +110,4 @@ public class EnderecoController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto(e.getMessage(), HttpStatus.CONFLICT.value()));
         }
     }
-    @Operation(summary = "deletar endereço", method = "DeLETE")
-    @DeleteMapping
-    public ResponseEntity<Object> delete(@RequestParam @NotNull Long codigoEndereco) {
-        try{
-            Optional<EnderecoModel> object =enderecoService.findById(codigoEndereco);
-            if (object.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Endereço não cadastrado na base de dados informe um id válido", HttpStatus.BAD_REQUEST.value()));
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(enderecoService.delete(codigoEndereco));
-
-        }catch (DataIntegrityViolationException e) {
-           return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorDto(e.getMessage(), HttpStatus.CONFLICT.value()));
-        }
-    }
 }
