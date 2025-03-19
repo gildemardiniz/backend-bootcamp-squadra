@@ -97,6 +97,10 @@ Se você deseja contribuir com o projeto, siga os passos abaixo:
 
 Agradeço à **Squadra Digital** pela oportunidade de aprender e crescer durante o bootcamp. Foi uma experiência que me desafiou e me permitiu desenvolver habilidades essenciais para minha jornada na tecnologia.
 
+## Front-End
+
+Você pode encontrar o código do **front-end** neste repositório: [frontend-bootcamp-squadra](https://github.com/gildemardiniz/frontend-bootcamp-squadra)
+
 ## Contato
 
 [Gildemar Diniz](https://www.linkedin.com/in/gildemardiniz) | diniz.g.dev@gmail.com
